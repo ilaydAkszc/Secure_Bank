@@ -1,0 +1,62 @@
+﻿@model Secure_Bank.Models.Model.Account
+@{
+    ViewData["Title"] = "Hesap Detayları";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Hesap Detayları</h2>
+
+</div>
+
+<div class="card">
+
+    <div class="card-header bg-primary  text-white">
+        <h3>Hesap #@Model.AccountNumber</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Hesap Bilgileri</h5>
+
+              @*   <p><strong>Hesap Numarası:</strong> @Model.AccountNumber</p> *@
+                <p><strong>Hesap Tipi:</strong> @Model.AccountType</p>
+                <p><strong>Bakiye:</strong> <span class="text-success h4">@Model.Balance.ToString("N2") TL</span></p>
+                <p><strong>Oluşturulma Tarihi:</strong> @Model.CreatedDate.ToString("MMM dd, yyyy")</p>
+
+            </div>
+            <div class="col-md-6">
+                <h5>Hesap Sahibinin Bilgileri</h5>
+
+                <p><strong>Ad soyad:</strong> @Model.User.FullName</p>
+               
+                <p><strong>Kullanıcı adı:</strong> @Model.User.Username</p>
+                
+                <p><strong>Email:</strong> @Model.User.Email</p>
+
+
+                @if (!string.IsNullOrEmpty(Model.User.Bio))
+                {
+                    <div class="mt-3">
+                        <strong>Hakkımda:</strong>
+                        <div class="p-2 border rounded bg-light">
+                         
+                            @Model.User.Bio
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mt-3">
+            @*  <a href="@Url.Action("Transfer", "Banking")" class="btn btn-success">Bu hesaptan transfer yap</a> *@
+            <a href="@Url.Action("Transactions", "Banking")" class="btn btn-info">İşlemleri göster</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

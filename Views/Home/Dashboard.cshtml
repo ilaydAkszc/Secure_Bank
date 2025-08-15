@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<h2>Ana Sayfa</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Hızlı Başlangıç</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="@Url.Action("ShowAccounts", "Banking")" class="btn btn-outline-primary btn-lg w-100 mb-3">
+                            <i class="bi bi-bank"></i><br>
+                            Hesaplarım
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="@Url.Action("Transfer", "Banking")" class="btn btn-outline-success btn-lg w-100 mb-3">
+                            <i class="bi bi-arrow-left-right"></i><br>
+                            Para Transferi
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="@Url.Action("Transactions", "Banking")" class="btn btn-outline-info btn-lg w-100 mb-3">
+                            <i class="bi bi-list-ul"></i><br>
+                            Yapılan İşlemler
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>En son aktiviteler</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Yakın zamandaki işlemleriniz burada gözükecek...</p>
+                <a href="@Url.Action("Transactions", "Banking")" class="btn btn-sm btn-outline-primary">Tüm İşlemleri Göster</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Hesap Özeti</h5>
+            </div>
+            <div class="card-body">
+                <p>Tekrar hoşgeldiniz, <strong>@Context.Session.GetString("FullName")</strong></p>
+
+                <p class="text-muted">Kullanıcı adı: @Context.Session.GetString("Username")</p>
+
+                <p class="text-muted">Email: @Context.Session.GetString("Email")</p>
+
+                <a href="@Url.Action("ProfilEdit", "Account")" class="btn btn-sm btn-outline-secondary">Profili Düzenle</a>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

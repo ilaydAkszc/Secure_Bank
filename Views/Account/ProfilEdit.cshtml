@@ -1,0 +1,88 @@
+﻿@model Secure_Bank.Models.ViewModels.ProfilViewModel
+@{
+    ViewData["Title"] = "Profil";
+}
+
+@* Sadece belli kaynaklardan gelen htmlleri kabul etmemizi sağlıyor böylece xss in önüne geçiyoruz
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; object-src 'none';"> *@
+
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>PROFİL</h3>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.Message != null)
+                {
+                    <div class="alert alert-success">@ViewBag.Message</div>
+                }
+
+                <form asp-action="ProfilEdit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="UserId" type="hidden" />
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" readonly />
+                        <small class="form-text text-muted">Kullanıcı adı değiştirilemez</small>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Bio" class="form-label"></label>
+                        <textarea asp-for="Bio" class="form-control" rows="4" placeholder="Hakkımda..."></textarea>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                    <a href="@Url.Action("Dashboard", "Home")" class="btn btn-secondary">İptal</a>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Profil</h5>
+            </div>
+            <div class="card-body">
+                <h6>@Model.Username</h6>
+                <p class="text-muted">Ad soyad: @Model.FullName</p>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <div>
+                    <strong>Hakkımda:</strong>
+               
+                    <div class="mt-2 p-2 border rounded">
+                        
+                        @Model.Bio
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

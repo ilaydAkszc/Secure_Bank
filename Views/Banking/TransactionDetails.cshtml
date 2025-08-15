@@ -1,0 +1,88 @@
+﻿@model Secure_Bank.Models.Model.Transaction
+@{
+    ViewData["Title"] = "İşlem Detayları";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🧾 İşlem Detayları</h2>
+    <div>
+        <a href="@Url.Action("Transactions", "Banking")" class="btn btn-outline-secondary">İşlemlere dön</a>
+        <a href="@Url.Action("Transfer", "Banking")" class="btn btn-success">Yeni Transfer</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h3>
+            <i class="bi bi-receipt"></i>
+            Transaction #@Model.TrId
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>İşlem Bilgileri</h5>
+                <table class="table table-borderless">
+                @*     <tr>
+                        <td><strong>İşlem Numarası:</strong></td>
+                        <td>@Model.TrId</td>
+                    </tr> *@
+                    <tr>
+                        <td><strong>Tarih & Saat:</strong></td>
+                        <td>@Model.TransactionDate.ToString("MMM dd, yyyy HH:mm:ss")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>İşlem Tipi:</strong></td>
+                        <td><span class="badge bg-info">@Model.TransactionType</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Miktar:</strong></td>
+                        <td><span class="text-success h4">@Model.Amount.ToString("N2") TL</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Açıklama:</strong></td>
+                        <td>@(string.IsNullOrEmpty(Model.Description) ? "No description provided" : Model.Description)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <h5>Hesap bilgileri</h5>
+                <div class="card mb-3">
+                    <div class="card-header bg-secondary text-white">
+                        <h6 class="mb-0">Gönderen</h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Hesap Numarası:</strong> @Model.FromAccount.AccountNumber</p>
+                       @*  <p><strong>Hesap Tipi:</strong> @Model.FromAccount.AccountType</p> *@
+                        <p><strong>Sahibi:</strong> @Model.FromAccount.User.FullName</p>
+@*                         <p><strong>Bakiye:</strong> @Model.FromAccount.Balance.ToString("N2") TL</p> *@
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">Alıcı</h6>
+                    </div>
+                    <div class="card-body">
+
+                        <p><strong>Hesap Numarası:</strong> @Model.ToAccount.AccountNumber</p>
+            @*             <p><strong>Hesap Tipi:</strong> @Model.ToAccount.AccountType</p> *@
+                        <p><strong>Sahibi:</strong> @Model.ToAccount.User.FullName</p>
+                      @*   <p><strong>Bakiye:</strong> @Model.ToAccount.Balance.ToString("N2") TL</p> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Secure_Bank.Models.Model.Account>
+@{
+    ViewData["Title"] = "Hesaplarım";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Hesaplarım</h2>
+ 
+</div>
+
+<div class="row">
+    @foreach (var account in Model)
+    {
+        <div class="col-md-6 mb-3">
+            <div class="card @(account.AccountType == "Admin" ? "border-warning" : "")">
+                <div class="card-header d-flex justify-content-between">
+                    <h5>@account.AccountType Hesap</h5>
+                    <span class="badge bg-primary">@account.AccountNumber</span>
+                </div>
+                <div class="card-body">
+                    <h4 class="text-success">@account.Balance.ToString("N2")TL</h4>
+                    <p class="text-muted">Oluşturulma Tarihi: @account.CreatedDate.ToString("MMM dd, yyyy")</p>
+
+@*                       <p class="text-muted">Hesap ID: @account.AcId</p> *@
+
+                    <div class="btn-group" role="group">
+
+                        <!-- KASITLI IDOR LINK - Account ID doğrudan URL'de  düzeldi-->
+                        <a href="@Url.Action("AccountDetails", "Banking", new { id = account.AcId })" class="btn btn-sm btn-outline-info">
+                            Detaylar
+                        </a>
+                        <a href="@Url.Action("Transfer", "Banking")" class="btn btn-sm btn-outline-success">
+                            Transfer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

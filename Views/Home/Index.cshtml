@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "Giriş Sayfası";
+}
+
+<div class="text-center">
+    <h1 class="display-4">🏦 MODERNBANK'A  HOŞGELDİNİZ </h1>
+    <p class="lead">SİZİN PARANIZ, BİZİM SORUMLULUĞUMUZ!</p>
+
+  
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">HESABINIZA GİRİŞ YAPINIZ😊</h5>
+                      
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-primary">GİRİŞ</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">HESABINIZ YOK MU? HEMEN KAYIT OLUN🙌</h5>
+                  
+                    <a href="@Url.Action("Register", "Account")" class="btn btn-success">KAYIT OL</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
