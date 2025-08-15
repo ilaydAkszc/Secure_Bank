@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Secure_Bank.Models.DataContext;
 using Secure_Bank.Models.Model;
@@ -11,6 +12,9 @@ namespace Secure_Bank.Controllers
     public class AccountController : Controller
     {
         private readonly BankaDbContext _context;
+        // PasswordHasher, ASP.NET Core Identity tarafından sağlanan bir sınıftır.
+        private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
+
 
         public AccountController(BankaDbContext context)
         {
@@ -23,45 +27,48 @@ namespace Secure_Bank.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
+      
         public async Task<IActionResult> LoginAsync(LoginViewModel model)
         {
-
             if (!ModelState.IsValid)
             {
-                return View(model);//Formu tekrar kullanıcıya geri gösterir, girilmiş olan verileri ve hata mesajlarını sayfada tekrar gösterir.
+                return View(model);
             }
-            //var hashedPassword = HashingPassword(model.Password);
 
+            // Kullanıcıyı sadece kullanıcı adına göre bul.
+            var user = _context.Users.FirstOrDefault(u => u.Username == model.Username);
 
-
-            var user = _context.Users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
-
-            // Kullanıcı adı ve şifre kontrolü
+            // Kullanıcı ve şifre kontrolü
             if (user != null)
             {
-                // Eski session'ı temizle
-                HttpContext.Session.Clear();
+                var passwordResult = _passwordHasher.VerifyHashedPassword(user, user.Password, model.Password);
 
-                // Yeni session oluştur
-                await HttpContext.Session.CommitAsync();
+                if (passwordResult == PasswordVerificationResult.Success)
+                {
+                    // Eski session'ı temizle
+                    HttpContext.Session.Clear();
 
-                // Session'a kullanıcı bilgilerini kaydet (güvensiz)
-                HttpContext.Session.SetString("Username", user.Username);
-                HttpContext.Session.SetInt32("UserId", user.UserId);
-                HttpContext.Session.SetString("FullName", user.FullName);
-                HttpContext.Session.SetString("Email", user.Email);
+                    // Yeni session oluştur
+                    await HttpContext.Session.CommitAsync();
 
-                return RedirectToAction("Dashboard", "Home");
+                    // Session'a kullanıcı bilgilerini kaydet
+                    HttpContext.Session.SetString("Username", user.Username);
+                    HttpContext.Session.SetInt32("UserId", user.UserId);
+                    HttpContext.Session.SetString("FullName", user.FullName);
+                    HttpContext.Session.SetString("Email", user.Email);
+
+                    return RedirectToAction("Dashboard", "Home");
+                }
             }
+
+            // Kullanıcı bulunamadıysa VEYA şifre yanlışsa genel hata mesajını göster.
+
             ModelState.AddModelError("", "Geçersiz kullanıcı adı veya şifre.");
             return View(model);
-
-
-
         }
-
         //LOGOUT
         public IActionResult Logout()
         {
@@ -95,8 +102,7 @@ namespace Secure_Bank.Controllers
                 return View(model);
             }
 
-            //// Şifre hashleme
-            //var hashedPassword = HashingPassword(model.Password);
+         
 
 
             // Yeni kullanıcı oluştur 
@@ -105,9 +111,11 @@ namespace Secure_Bank.Controllers
                 Username = model.Username,
                 FullName = model.FullName,
                 Email = model.Email,
-                Password = model.Password, 
                 CreatedDate = DateTime.Now
             };
+
+            // Şifreyi hashleme
+            user.Password = _passwordHasher.HashPassword(user, model.Password);
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -186,14 +194,6 @@ namespace Secure_Bank.Controllers
         }
 
 
-        //// Şifreyi hashleme işlem
-        //private string HashingPassword(string password)
-        //{
-        //    using (var sha256 = SHA256.Create())
-        //    {
-        //        var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-        //        return BitConverter.ToString(bytes).Replace("-", "").ToLower();
-        //    }
-        //}
+     
     }
 }
